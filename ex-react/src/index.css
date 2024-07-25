@@ -1,0 +1,28 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'react-toastify/dist/ReactToastify.min.css';
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';
+@import 'ckeditor5/ckeditor5.css';
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.swal2-container {
+  z-index: 1500;
+}
+.ck-editor__editable {
+  min-height: 200px;
+}
