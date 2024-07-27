@@ -37,8 +37,8 @@ public class CategoryController {
         Page<Category> categoryPage = categoryService.getAllCategories(keySearch, pageRequest);
         int totalPages = categoryPage.getTotalPages();
         List<Category> categories = categoryPage.getContent();
-        List<Category> cates = categoryService.findAll();
-        int totalCategories = cates.size();
+        List<Category> allMatchingCategories = categoryService.findAllByNameContaining(keySearch);
+        int totalCategories = allMatchingCategories.size();
         CategoryListResponse response = CategoryListResponse.builder()
                 .categories(categories)
                 .totalPages(totalPages)

@@ -13,4 +13,5 @@ public interface CategoryService {
     Category save(Category category);
     void deleteById(Long id);
     Page<Category> getAllCategories(String keySearch, PageRequest pageRequest);
+    public List<Category> findAllByNameContaining(String keySearch);
 }

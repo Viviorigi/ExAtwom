@@ -20,6 +20,7 @@ public class ProductResponse {
     private String description;
     private LocalDateTime regtDt;
     private LocalDateTime updDt;
+    private Long cate_id;
     private String cateName;
 }
 

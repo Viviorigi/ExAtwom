@@ -11,7 +11,9 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 export default function Product() {
+  //total set lai, phan trang theo dung total, selected edit , so index trang 2 tang tiep
   const [listPro, setListPro] = useState([]);
+  const [totalPage, setTotalPage] = useState(0);
   const [totalProduct, setTotalProduct] = useState(0);
   const [listCate, setListCate] = useState([]);
   const [open, setOpen] = useState(false);
@@ -21,18 +23,24 @@ export default function Product() {
     );
   const productRef = useRef<any>();
   const dispatch = useAppDispatch();
-
+  //xu ly trang tiep theo index tang
+  const indexOfLastItem = productSearchParams.page * productSearchParams.limit;
+  const indexOfFirstItem = indexOfLastItem - productSearchParams.limit;
   const prev = () => {
-    setProductSearchParams(() => ({
-      ...productSearchParams,
-      page: productSearchParams.page - 1,
-    }));
+    if (productSearchParams.page > 1) {
+      setProductSearchParams(() => ({
+        ...productSearchParams,
+        page: productSearchParams.page - 1,
+      }));
+    }
   };
   const next = () => {
-    setProductSearchParams(() => ({
-      ...productSearchParams,
-      page: productSearchParams.page + 1,
-    }));
+    if(productSearchParams.page < totalPage){
+      setProductSearchParams(() => ({
+        ...productSearchParams,
+        page: productSearchParams.page + 1,
+      }));
+    } 
   };
   const handleChangeSearch = (event: any) => {
     setProductSearchParams({
@@ -61,7 +69,8 @@ export default function Product() {
         if (resp.status === 200) {
           dispatch(setLoading(false));
           setListPro(resp.data.products);
-          setTotalProduct(resp.data.totalProducts)
+          setTotalProduct(resp.data.totalProducts);
+          setTotalPage(resp.data.totalPages);
         }
       })
       .catch((err: any) => {
@@ -86,7 +95,7 @@ export default function Product() {
   };
 
   const formatDate = (date: any) => {
-    return format(new Date(date), "dd/MM/yyyy");
+    return format(new Date(date), "dd/MM/yyyy hh:mm:ss");
   };
 
   const addProduct = () => {
@@ -120,21 +129,19 @@ export default function Product() {
     }).then((result) => {
       if (result.value) {
         dispatch(setLoading(true));
-        ProductService.getInstance().deleteProd(id).then((resp: any) => {
-          dispatch(setLoading(false));
-          Swal.fire({
-            title: "Delete",
-            text: "Delete successfully",
-            icon: "success",
+        ProductService.getInstance()
+          .deleteProd(id)
+          .then((resp: any) => {
+            dispatch(setLoading(false));
+            setProductSearchParams({
+              ...productSearchParams,
+              timer: new Date().getTime(),
+            });
+            toast.success("Delete successfully");
+          })
+          .catch((err: any) => {
+            dispatch(setLoading(false));
           });
-          setProductSearchParams({
-            ...productSearchParams,
-            timer: new Date().getTime(),
-          });
-          toast.success("Delete successfully");
-        }).catch((err:any)=>{
-          dispatch(setLoading(false));
-        });
       }
     });
   };
@@ -186,14 +193,13 @@ export default function Product() {
           </div>
           <h3>List Product</h3>
           <h5>TotalProduct:{totalProduct}</h5>
-          <table className="table">
+          <table className="table table-bordered  ">
             <thead>
-              <tr>
+              <tr className="text-center">
                 <th scope="col">No</th>
-                <th scope="col">ID</th>
                 <th scope="col">ProductCode</th>
                 <th scope="col">ProductName</th>
-                <th scope="col">CategoryName</th>
+                <th scope="col">CateName</th>
                 <th scope="col">Price</th>
                 <th scope="col">CreateDate</th>
                 <th scope="col">UpdatedAt</th>
@@ -201,17 +207,19 @@ export default function Product() {
               </tr>
             </thead>
             <tbody>
+            {totalProduct ===0 && <h3>No data</h3>}
               {listPro.map((p: any, index: number) => (
                 <tr key={p.id}>
-                  <th scope="row">{index + 1}</th>
-                  <th scope="row">{p.id}</th>
-                  <td>{p.prod_code}</td>
-                  <td>{p.prod_nm}</td>
-                  <td>{p.cateName}</td>
-                  <td>{p.prod_price}</td>
-                  <td>{formatDate(p.regtDt)}</td>
-                  <td>{formatDate(p.updDt)}</td>
-                  <td>
+                  <th scope="row" className="text-center">
+                    {indexOfFirstItem+index + 1}
+                  </th>
+                  <td className="text-center">{p.prod_code}</td>
+                  <td className="text-center">{p.prod_nm}</td>
+                  <td className="text-center">{p.cateName}</td>
+                  <td className="text-end">{p.prod_price}</td>
+                  <td className="text-center">{formatDate(p.regtDt)}</td>
+                  <td className="text-center">{formatDate(p.updDt)}</td>
+                  <td className="text-center">
                     <button
                       className="btn btn-secondary "
                       onClick={() => editProduct(p)}
@@ -244,7 +252,7 @@ export default function Product() {
             visible={open}
             onHide={() => handleClickClose()}
           >
-            <ProductForm  
+            <ProductForm
               prod={productRef.current}
               closeForm={handleClickClose}
               onSave={() => {
@@ -252,7 +260,8 @@ export default function Product() {
                   ...prev,
                   timer: new Date().getTime(),
                 }));
-              }} />
+              }}
+            />
           </Dialog>
         </div>
       </div>

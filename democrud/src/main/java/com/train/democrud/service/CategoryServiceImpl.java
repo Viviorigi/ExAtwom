@@ -16,7 +16,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findAll();
@@ -24,15 +24,15 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Category findById(Long id) throws Exception {
-		return categoryRepository.findById(id).orElseThrow(()-> new Exception("id not found"));
+		return categoryRepository.findById(id).orElseThrow(() -> new Exception("id not found"));
 	}
 
 	@Override
-	public Category save(Category category) {	
-		if (category.getId() ==null) {
+	public Category save(Category category) {
+		if (category.getId() == null) {
 			category.setRegtDt(LocalDateTime.now());
-		}else {
-			Category cate =categoryRepository.findById(category.getId()).orElse(null);
+		} else {
+			Category cate = categoryRepository.findById(category.getId()).orElse(null);
 			category.setRegtDt(cate.getRegtDt());
 		}
 		category.setUpdDt(LocalDateTime.now());
@@ -49,6 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryRepository.findByNameContaining(keySearch, pageRequest);
 	}
 
-	
+	public List<Category> findAllByNameContaining(String keySearch) {
+		return categoryRepository.findAllByNameContaining(keySearch);
+	}
 
 }

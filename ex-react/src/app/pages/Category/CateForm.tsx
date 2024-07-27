@@ -3,7 +3,6 @@ import { CategoryDto } from "../../models/CategoryDTO";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Swal from "sweetalert2";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { CateService } from "../../Services/CateService";
 import { useAppDispatch } from "../../store/hook";
@@ -57,11 +56,6 @@ export default function CateForm(props: any) {
           .then((resp: any) => {
             setTimeout(() => {
               dispatch(setLoading(false));
-              Swal.fire({
-                title:  "Update",
-                text: "Update successfully",
-                icon: "success",
-              });
               toast.success("Update successfully");
               closeForm();
               onSave();
@@ -78,11 +72,6 @@ export default function CateForm(props: any) {
             if(resp){
               setTimeout(() => {
                 dispatch(setLoading(false));
-                Swal.fire({
-                  title:  "Add" ,
-                  text: "Add successfully",
-                  icon: "success",
-                });
                 toast.success( "Add successfully");
                 closeForm();
                 onSave();  

@@ -11,7 +11,7 @@ const spinnerSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-    },
+    }
 });
 
 export default spinnerSlice.reducer;

@@ -13,7 +13,8 @@ import { setLoading } from "../../reducers/spinnerSlice";
 
 export default function Category() {
   const [listCate, setListCate] = useState([]);
-  const [totalCate,SetTotalCate]=useState(0);
+  const [totalCate, setTotalCate] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
   const [open, setOpen] = useState(false);
   const [openPro, setOpenPro] = useState(false);
   const [cateSearchParams, setCateSearchParams] = useState<CateSearchParams>(
@@ -21,17 +22,23 @@ export default function Category() {
   );
   const categoryRef = useRef<any>();
   const dispatch = useAppDispatch();
+  const indexOfLastItem = cateSearchParams.page * cateSearchParams.limit;
+  const indexOfFirstItem = indexOfLastItem - cateSearchParams.limit;
   const prev = () => {
-    setCateSearchParams(() => ({
-      ...cateSearchParams,
-      page: cateSearchParams.page - 1,
-    }));
+    if (cateSearchParams.page > 1) {
+      setCateSearchParams(() => ({
+        ...cateSearchParams,
+        page: cateSearchParams.page - 1,
+      }));
+    }
   };
   const next = () => {
-    setCateSearchParams(() => ({
-      ...cateSearchParams,
-      page: cateSearchParams.page + 1,
-    }));
+    if (cateSearchParams.page < totalPage) {
+      setCateSearchParams(() => ({
+        ...cateSearchParams,
+        page: cateSearchParams.page + 1,
+      }));
+    }
   };
   const handleChangeSearch = (event: any) => {
     setCateSearchParams({
@@ -48,7 +55,6 @@ export default function Category() {
     }
   };
   useEffect(() => {
-    
     CateService.getInstance()
       .getLstCate({
         keySearch: cateSearchParams.keySearch,
@@ -57,13 +63,16 @@ export default function Category() {
       })
       .then((resp: any) => {
         dispatch(setLoading(true));
-        if (resp.status === 200) {    
+        if (resp.status === 200) {
           dispatch(setLoading(false));
           setListCate(resp.data.categories);
-          SetTotalCate(resp.data.totalCategories)
+          setTotalCate(resp.data.totalCategories);
+          setTotalPage(resp.data.totalPages);
         }
       })
-      .catch((err: any) => {dispatch(setLoading(false));});
+      .catch((err: any) => {
+        dispatch(setLoading(false));
+      });
   }, [cateSearchParams.timer, cateSearchParams.page]);
 
   const handleClickClose = () => {
@@ -74,7 +83,7 @@ export default function Category() {
   };
 
   const formatDate = (date: any) => {
-    return format(new Date(date), "dd/MM/yyyy");
+    return format(new Date(date), "dd/MM/yyyy hh:mm:ss");
   };
 
   const addCategory = () => {
@@ -108,21 +117,19 @@ export default function Category() {
     }).then((result) => {
       if (result.value) {
         dispatch(setLoading(true));
-        CateService.getInstance().deleteCate(id).then((resp: any) => {
-          dispatch(setLoading(false));
-          Swal.fire({
-            title: "Delete",
-            text: "Delete successfully",
-            icon: "success",
+        CateService.getInstance()
+          .deleteCate(id)
+          .then((resp: any) => {
+            dispatch(setLoading(false));
+            setCateSearchParams({
+              ...cateSearchParams,
+              timer: new Date().getTime(),
+            });
+            toast.success("Delete successfully");
+          })
+          .catch((err: any) => {
+            dispatch(setLoading(false));
           });
-          setCateSearchParams({
-            ...cateSearchParams,
-            timer: new Date().getTime(),
-          });
-          toast.success("Delete successfully");
-        }).catch((err:any)=>{
-          dispatch(setLoading(false));
-        });
       }
     });
   };
@@ -162,11 +169,10 @@ export default function Category() {
           </div>
           <h3>List Category</h3>
           <h5>TotalCategory:{totalCate}</h5>
-          <table className="table">
+          <table className="table table-bordered text-center">
             <thead>
               <tr>
                 <th scope="col">No</th>
-                <th scope="col">ID</th>
                 <th scope="col">CateName</th>
                 <th scope="col">CreateDate</th>
                 <th scope="col">UpdateAt</th>
@@ -175,16 +181,14 @@ export default function Category() {
               </tr>
             </thead>
             <tbody>
+              {totalCate ===0 && <h3>No data</h3>}
               {listCate.map((c: any, index: number) => (
                 <tr key={c.id}>
-                  <th scope="row">{index + 1}</th>
-                  <th scope="row">{c.id}</th>
+                  <th scope="row">{indexOfFirstItem+index + 1}</th>
                   <td>{c.name}</td>
                   <td>{formatDate(c.regtDt)}</td>
                   <td>{formatDate(c.updDt)}</td>
-                  <td onClick={() => lstPro(c.id)}>
-                    {c.products.length}{" "} 
-                  </td>
+                  <td onClick={() => lstPro(c.id)}>{c.products.length} </td>
                   <td>
                     <button
                       className="btn btn-secondary "

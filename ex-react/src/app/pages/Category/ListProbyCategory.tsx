@@ -7,20 +7,27 @@ import { ProductService } from "../../Services/ProductService";
 export default function ListProbyCategory(props: any) {
   const { cateId } = props;
   const [listProByCate, setlistProByCate] = useState([]);
+  const [totalPage, setTotalPage] = useState(0);
   const [proByCateParams, setproByCateParams] = useState<ProductSearchParams>(
     new ProductSearchParams(cateId, "", 1, 5, new Date().getTime())
   );
+  const indexOfLastItem = proByCateParams.page * proByCateParams.limit;
+  const indexOfFirstItem = indexOfLastItem - proByCateParams.limit;
   const prev = () => {
-    setproByCateParams(() => ({
-      ...proByCateParams,
-      page: proByCateParams.page - 1,
-    }));
+    if(proByCateParams.page > 1){
+      setproByCateParams(() => ({
+        ...proByCateParams,
+        page: proByCateParams.page - 1,
+      }));
+    }
   };
   const next = () => {
-    setproByCateParams(() => ({
-      ...proByCateParams,
-      page: proByCateParams.page + 1,
-    }));
+    if(proByCateParams.page < totalPage){
+      setproByCateParams(() => ({
+        ...proByCateParams,
+        page: proByCateParams.page + 1,
+      }));
+    }
   };
   useEffect(() => {
     ProductService.getInstance()
@@ -32,6 +39,7 @@ export default function ListProbyCategory(props: any) {
       .then((resp: any) => {
         if (resp.status === 200) {
           setlistProByCate(resp.data.products);
+          setTotalPage(resp.data.totalPages)
         }
       })
       .catch((err: any) => {});
@@ -57,9 +65,10 @@ export default function ListProbyCategory(props: any) {
           </tr>
         </thead>
         <tbody>
+          {listProByCate.length===0 && <h3 className="text-center m-3">No Data</h3>}
           {listProByCate.map((p: any, index: number) => (
             <tr key={p.id}>
-              <th scope="row">{index + 1}</th>
+              <th scope="row">{indexOfFirstItem+index + 1}</th>
               <th scope="row">{p.id}</th>
               <td>{p.prod_code}</td>
               <td>{p.prod_nm}</td>

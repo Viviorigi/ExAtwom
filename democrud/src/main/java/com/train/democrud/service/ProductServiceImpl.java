@@ -87,7 +87,13 @@ public class ProductServiceImpl implements ProductService {
 	                .description(product.getDescription())
 	                .regtDt(product.getRegtDt())
 	                .updDt(product.getUpdDt())
+	                .cate_id(product.getCategory().getId())
 	                .cateName(product.getCategory().getName())
 	                .build());
     }
+
+	@Override
+	public List<Product> findByCategoryIdAndProdName(Long categoryId, String prodName) {
+		return productRepository.findByCategoryIdAndProdName(categoryId, prodName);
+	}
 }

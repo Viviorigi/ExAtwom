@@ -64,7 +64,7 @@ public class ProductController {
         Page<ProductResponse> productPage = productService.getProductsByCategoryIdAndName(categoryId, keySearch, pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
-        List<Product> pros = productService.findAll();
+        List<Product> pros = productService.findByCategoryIdAndProdName(categoryId,keySearch);
         int totalProduct = pros.size();
         ProductListResponse response = ProductListResponse.builder()
                 .products(products)

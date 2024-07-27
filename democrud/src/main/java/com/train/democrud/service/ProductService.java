@@ -16,4 +16,5 @@ public interface ProductService {
     Product findById(Long id) throws Exception;
     Product update(Long id, ProductDto product) throws Exception;
     Page<ProductResponse> getProductsByCategoryIdAndName(Long categoryId, String prodName, PageRequest pageRequest);
+    List<Product> findByCategoryIdAndProdName(Long categoryId, String prodName);
 }

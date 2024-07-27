@@ -19,10 +19,8 @@ export default function ProductForm(props: any) {
     if (prod) {
       setProdSave({ ...prod });
     }
-    console.log(prodSave);
-    
-  }, [prod]);
-
+  }, []);
+  
   useEffect(() => {
     CateService.getInstance()
       .getLstCate({
@@ -126,11 +124,6 @@ export default function ProductForm(props: any) {
             .then((resp: any) => {
               setTimeout(() => {
                 dispatch(setLoading(false));
-                Swal.fire({
-                  title: "Update",
-                  text: "Update successfully",
-                  icon: "success",
-                });
                 toast.success("Update successfully");
                 closeForm();
                 onSave();
@@ -149,11 +142,6 @@ export default function ProductForm(props: any) {
               if (resp) {
                 setTimeout(() => {
                   dispatch(setLoading(false));
-                  Swal.fire({
-                    title: "Add",
-                    text: "Add successfully",
-                    icon: "success",
-                  });
                   toast.success("Add successfully");
                   closeForm();
                   onSave();
@@ -241,7 +229,7 @@ export default function ProductForm(props: any) {
         >
            <option value="">Select Category</option> 
           {listCate.map((cate: any) => (
-            <option key={cate.id} value={cate.id} selected={cate.id === prodSave.cate_id}>
+            <option key={cate.id} value={cate.id} >
             {cate.name}
           </option>
           ))}
