@@ -34,8 +34,25 @@ export default function CateForm(props: any) {
     }));
   };
 
+  const setCateState = () => {
+    setCateSave((prev: CategoryDto) => {
+      return {
+        ...prev,
+        name: prev.name || "",
+      };
+    });
+  };
+
+  const chk = () => {
+    if (cateSave.name === undefined || cateSave.name === "") {
+      setCateState();
+      return false;
+    }
+    return true;
+  };
+
   const save = () => {
-    if (!cateSave.name) {
+    if (!chk()) {
       return;
     }
 
@@ -94,7 +111,7 @@ export default function CateForm(props: any) {
     <div>
       <h3>{cate === null ? "Add" : "Edit"}</h3>
       <div className="form-group ">
-        <label>Category Name</label>
+        <label>Category Name <span className="text-danger">(*)</span></label>
         <input
           type="text"
           name="name"

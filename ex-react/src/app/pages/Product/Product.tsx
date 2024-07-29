@@ -46,6 +46,7 @@ export default function Product() {
     setProductSearchParams({
       ...productSearchParams,
       [event.target.name]: event.target.value,
+      page:1
     });
   };
   const handleKeyUpSearch = (e: any) => {
@@ -112,6 +113,7 @@ export default function Product() {
       ...productSearchParams,
       [e.target.name]: e.target.value,
       timer: new Date().getTime(),
+      page:1
     });
   };
   const deleteProduct = (id: any) => {

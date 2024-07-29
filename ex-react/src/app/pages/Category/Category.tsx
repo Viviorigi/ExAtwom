@@ -44,6 +44,7 @@ export default function Category() {
     setCateSearchParams({
       ...cateSearchParams,
       [event.target.name]: event.target.value,
+      page:1
     });
   };
   const handleKeyUpSearch = (e: any) => {

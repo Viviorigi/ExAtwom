@@ -17,7 +17,7 @@ export default function App() {
     { path: 'not-permission', element: <NotPermission /> }, //403
     { path: '/', element: <Navigate to="/dashboard" replace /> },
     indexRouter,
-    { path: '*', element: <NotFound /> }, //404
+    { path: '*', element: <NotFound /> } //404
   ]);
   return (
     <div className="App">

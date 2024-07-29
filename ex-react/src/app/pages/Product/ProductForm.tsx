@@ -72,9 +72,9 @@ export default function ProductForm(props: any) {
         ...prev,
         prod_code: prev.prod_code || "",
         prod_nm: prev.prod_nm || "",
-        prod_price: prev.prod_price || 0,
+        prod_price: prev.prod_price||"" ,
         description: prev.description,
-        cate_id: prev.cate_id,
+        cate_id: prev.cate_id||"",
       };
     });
   };
@@ -91,6 +91,13 @@ export default function ProductForm(props: any) {
     if (
       prodSave.prod_price === undefined ||
       prodSave.prod_price.toString() === ""
+    ) {
+      setProState();
+      return false;
+    }
+    if (
+      prodSave.cate_id === undefined ||
+      prodSave.cate_id.toString() === ""
     ) {
       setProState();
       return false;
@@ -162,7 +169,7 @@ export default function ProductForm(props: any) {
     <div>
       <h3>{prod === null ? "Add Product" : "Edit Product"}</h3>
       <div className="form-group ">
-        <label>Product Code</label>
+        <label>Product Code <span className="text-danger">(*)</span></label>
         <input
           type="text"
           name="prod_code"
@@ -181,7 +188,7 @@ export default function ProductForm(props: any) {
         </div>
       </div>
       <div className="form-group ">
-        <label>Product Name</label>
+        <label>Product Name <span className="text-danger">(*)</span></label>
         <input
           type="text"
           name="prod_nm"
@@ -201,7 +208,7 @@ export default function ProductForm(props: any) {
         </div>
       </div>
       <div className="form-group ">
-        <label>Product Price</label>
+        <label>Product Price <span className="text-danger">(*)</span></label>
         <input
           type="number"
           name="prod_price"
@@ -220,20 +227,28 @@ export default function ProductForm(props: any) {
         </div>
       </div>
       <div className="form-group ">
-        <label>Select Category</label>
+        <label>Select Category <span className="text-danger">(*)</span></label>
         <select
           className="form-control"
           value={prodSave.cate_id || ""}
           onChange={handleCategoryChange}
           name="cate_id"
         >
-           <option value="">Select Category</option> 
+           <option value="" > Select Category</option> 
           {listCate.map((cate: any) => (
             <option key={cate.id} value={cate.id} >
             {cate.name}
           </option>
           ))}
         </select>
+        <div
+          className={`invalid-feedback ${
+            prodSave.cate_id?.toString() === "" ? "d-block" : ""
+          }`}
+          style={{ fontSize: "100%", color: "red" }}
+        >
+          Vui lòng chọn danh mục
+        </div>
       </div>
       <div className="form-group mt-3 mb-3">
         <label>Description</label>
